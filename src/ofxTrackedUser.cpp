@@ -28,10 +28,16 @@ ofxTrackedUser::ofxTrackedUser(ofxOpenNIContext* pContext)
 ,right_lower_leg(XN_SKEL_RIGHT_KNEE, XN_SKEL_RIGHT_FOOT)
 
 ,hip(XN_SKEL_LEFT_HIP, XN_SKEL_RIGHT_HIP)
+,id(0)
 {
 	context = pContext;
 	context->getDepthGenerator(&depth_generator);
 	context->getUserGenerator(&user_generator);
+}
+
+ofxTrackedUser::~ofxTrackedUser()
+{
+	cout << "User " << id << " destroyed" << endl;
 }
 
 void ofxTrackedUser::updateBonePositions() {

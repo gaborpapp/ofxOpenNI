@@ -207,9 +207,9 @@ bool ofxUserGenerator::setup( ofxOpenNIContext* pContext) {
 
 	// pre-generate the tracked users.
 	for(int i = 0; i < MAX_NUMBER_USERS; ++i) {
-		printf("Creting user: %i\n", i+1);
+		printf("Creating user: %i\n", i+1);
 		ofxTrackedUser* tracked_user = new ofxTrackedUser(context);
-		tracked_users[i] = tracked_user;
+		tracked_users.push_back(tracked_user);
 	}
 
 	return true;
@@ -259,10 +259,25 @@ ofxTrackedUser* ofxUserGenerator::getTrackedUser(int nUserNum) {
 }
 
 void ofxUserGenerator::setMaxNumberOfUsers(int nUsers) {
-	// TODO: make this truly dynamic by replacing the define and writing dynamic allocation/deletion functions for the arrays! Lazy method below ;-)
-	if (nUsers <= MAX_NUMBER_USERS) {
-		max_num_users = nUsers;
-	} else printf("Attempting to set number of tracked users higher than MAX_NUMBER_USERS - change the define in ofxUserGenerator.h first!");
+	// TODO: reallocate cloudpoint and maskpixel arrays as well
+	if (nUsers > MAX_NUMBER_USERS) {
+		printf("Attempting to set number of tracked users higher than MAX_NUMBER_USERS - change the define in ofxUserGenerator.h first!");
+		return;
+	}
+
+	if (nUsers < max_num_users) {
+		for (int i = nUsers + 1; i < max_num_users; i++) {
+			delete tracked_users[i];
+		}
+		tracked_users.erase(tracked_users.begin() + nUsers, tracked_users.end());
+	}
+	else if (nUsers > max_num_users) {
+		for (int i = max_num_users; i <= nUsers; i++) {
+			ofxTrackedUser* tracked_user = new ofxTrackedUser(context);
+			tracked_users.push_back(tracked_user);
+		}
+	}
+	max_num_users = nUsers;
 }
 
 // Get number of tracked users
@@ -279,8 +294,8 @@ void ofxUserGenerator::update() {
 	XnUserID* users = new XnUserID[max_num_users];
 	user_generator.GetUsers(users, found_users);
 	
-	for(int i = 0; i < found_users; ++i) {
-		if(user_generator.GetSkeletonCap().IsTracking(users[i])) {	
+	for(int i = 0; i < min(max_num_users, static_cast<int>(found_users)); ++i) {
+		if(user_generator.GetSkeletonCap().IsTracking(users[i])) {
 			tracked_users[i]->id = users[i];
 			tracked_users[i]->updateBonePositions();
 		}

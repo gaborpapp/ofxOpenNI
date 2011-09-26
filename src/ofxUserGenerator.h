@@ -1,6 +1,8 @@
 #ifndef _H_OFXUSERGENERATOR
 #define _H_OFXUSERGENERATOR
 
+#include <vector>
+
 #include "ofxOpenNIContext.h"
 #include "ofxDepthGenerator.h"
 #include "ofxImageGenerator.h"
@@ -59,12 +61,13 @@ private:
 	// vars for user tracking
 	XnBool							needs_pose;
 	XnChar							calibration_pose[20];
-	ofxTrackedUser *				tracked_users[MAX_NUMBER_USERS];
+	std::vector<ofxTrackedUser *>	tracked_users;
 	XnUInt16						found_users;
 	int								max_num_users;
-	
+
 	// vars for cloud point and masking
 	XnUInt16			width, height;
+	// TODO: use vectors instead of arrays
 	unsigned char *		maskPixels[MAX_NUMBER_USERS];
 	ofPoint		*		cloudPoints[MAX_NUMBER_USERS];
 	ofColor		*		cloudColors[MAX_NUMBER_USERS];

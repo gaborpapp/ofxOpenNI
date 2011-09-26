@@ -79,6 +79,7 @@ public:
 private:
 
 	ofxTrackedUser(ofxOpenNIContext* pContext);
+	~ofxTrackedUser();
 
 	void updateBonePositions();
 	void updateLimb(ofxLimb& rLimb);
