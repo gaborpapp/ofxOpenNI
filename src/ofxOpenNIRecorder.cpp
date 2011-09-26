@@ -154,7 +154,10 @@ bool ofxOpenNIRecorder::startRecord(string sName) {
 		
 		result = recorder.SetDestination(XN_RECORD_MEDIUM_FILE, config.record_name.c_str());
 		CHECK_RC(result, "Recorder set destination");
-		
+		if (result != XN_STATUS_OK) {
+			return false;
+		}
+
 		if (config.record_depth) {
 			
 			if (config.record_type == ONI_STREAMING) {
