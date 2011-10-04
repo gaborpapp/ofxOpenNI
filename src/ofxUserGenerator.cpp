@@ -266,10 +266,10 @@ void ofxUserGenerator::setMaxNumberOfUsers(int nUsers) {
 	}
 
 	if (nUsers < max_num_users) {
-		for (int i = nUsers + 1; i < max_num_users; i++) {
+		for (int i = nUsers; i < max_num_users; i++) {
 			delete tracked_users[i];
 		}
-		tracked_users.erase(tracked_users.begin() + nUsers, tracked_users.end());
+		tracked_users.erase(tracked_users.begin() + nUsers + 1, tracked_users.end());
 	}
 	else if (nUsers > max_num_users) {
 		for (int i = max_num_users; i <= nUsers; i++) {
